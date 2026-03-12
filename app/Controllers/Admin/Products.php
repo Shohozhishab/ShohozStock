@@ -253,7 +253,6 @@ class Products extends BaseController
     }
 
     public function add_action(){
-        $data['prod_cat_id'] = $this->request->getPost('sub_category');
         $data['name'] = $this->request->getPost('name');
         $data['unit'] = $this->request->getPost('unit');
         $data['purchase_price'] = $this->request->getPost('price');
@@ -261,7 +260,6 @@ class Products extends BaseController
         $data['quantity'] = $this->request->getPost('qty');
 
         $this->validation->setRules([
-            'prod_cat_id' => ['label' => 'Category', 'rules' => 'required'],
             'name' => ['label' => 'name', 'rules' => 'required'],
             'unit' => ['label' => 'unit', 'rules' => 'required'],
             'purchase_price' => ['label' => 'price', 'rules' => 'required'],

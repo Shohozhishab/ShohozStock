@@ -46,8 +46,6 @@
                                     <th>Name</th>
                                     <th>Quantity</th>
                                     <th>Purchase Price</th>
-                                    <th>Supplier</th>
-                                    <th>Prod Category</th>
                                     <th>Purchase Date</th>
                                     <th>Action</th>
                                 </tr>
@@ -64,8 +62,6 @@
                                         <td><?php echo $products->quantity ?>
                                             /<?php echo showUnitName($products->unit) ?></td>
                                         <td><?php echo showWithCurrencySymbol($products->purchase_price) ?></td>
-                                        <td><?php echo get_data_by_id('name', 'suppliers', 'supplier_id', $products->supplier_id) ?></td>
-                                        <td><?php echo get_data_by_id('product_category', 'product_category', 'prod_cat_id', $products->prod_cat_id) ?></td>
                                         <td><?php echo $products->purchase_date ?></td>
                                         <td>
                                             <a href="javascript:void(0)"

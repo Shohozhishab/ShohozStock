@@ -35,19 +35,6 @@
                         <!-- /.box-header -->
                         <div class="box-body">
                             <div class="form-group col-xs-6">
-                                <label for="int">Category </label>
-                                <select class="form-control" onchange="showSubCategory(this.value)" name="category" id="category">
-                                    <option value="">Please Select</option>
-                                    <?php echo getCatListInOption('prod_cat_id', 'prod_cat_id', 'product_category', 'product_category'); ?>
-                                </select>
-                            </div>
-                            <div class="form-group col-xs-6">
-                                <label for="int">Sub Category </label>
-                                <select class="form-control" name="sub_category" id="subCat">
-                                    <option value="">Please Select</option>
-                                </select>
-                            </div>
-                            <div class="form-group col-xs-6">
                                 <label for="varchar">Product Name </label> <span id="nameValid" style="color: red;"></span>
                                 <input type="text" class="form-control" name="name" id="name" placeholder="Name"/>
                             </div>
