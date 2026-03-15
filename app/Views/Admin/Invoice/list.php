@@ -14,7 +14,7 @@
         <!-- Small boxes (Stat box) -->
         <div class="row">
             <div class="col-xs-12" style="margin-bottom: 15px;">
-                <?php echo $menu;?>
+                <?php //echo $menu;?>
             </div>
             <div class="col-xs-12">
 

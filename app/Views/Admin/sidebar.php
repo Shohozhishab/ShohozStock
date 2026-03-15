@@ -129,8 +129,6 @@
                 </a>
                 <ul class="treeview-menu">
                     <?php echo add_main_ajax_based_menu_with_permission('Bank', '/Admin/Bank', $role_id, 'fa fa-th-list', '/Admin/Bank_ajax','Bank'); ?>
-                    <?php echo add_main_ajax_based_menu_with_permission('Deposit', '/Admin/Bank_deposit', $role_id, 'fa fa-th-list', '/Admin/Bank_deposit_ajax','Bank_deposit'); ?>
-                    <?php echo add_main_ajax_based_menu_with_permission('Withdraw', '/Admin/Bank_withdraw', $role_id, 'fa fa-th-list', '/Admin/Bank_withdraw_ajax','Bank_withdraw'); ?>
                     <?php echo add_main_ajax_based_menu_with_permission('Chaque', '/Admin/Chaque', $role_id, 'fa fa-th-list', '/Admin/Chaque_ajax','Chaque'); ?>
                 </ul>
             </li>

@@ -22,13 +22,7 @@
                                 <h3 class="box-title">Settings List</h3>
                             </div>
                             <div class="col-lg-6">
-                                <a href="javascript:void(0)" onclick="showData('<?php echo site_url('/Admin/Capital_ajax/'); ?>','<?php echo '/Admin/Capital/' ?>'),activeTab(this)"  class="btn btn-xs btn-success"><i class="fa fa-clock-o"></i> Capital</a>
-
-                                <a href="javascript:void(0)" onclick="showData('<?php echo site_url('/Admin/Yearly_closing_ajax/'); ?>','<?php echo '/Admin/Yearly_closing/' ?>'),activeTab(this)"  class="btn btn-xs btn-info"><i class="fa fa-clock-o"></i> Yearly closing</a>
-                                <?php $cheOpen = get_data_by_id('opening_status','shops','sch_id',newSession()->shopId); if ( $cheOpen == 0){ ?>
-                                <a href="javascript:void(0)" onclick="showData('<?php echo site_url('/Admin/Closing_ajax/'); ?>','<?php echo '/Admin/Closing/'; ?>'),activeTab(this)"  class="btn btn-xs btn-danger"><i class="fa fa-clock-o"></i> Starting business</a>
-                                <?php } ?>
-                                <a href="<?php echo site_url('/Admin/Settings/databaseBackup'); ?>"   class="btn btn-xs btn-success"><i class="fa fa-database"></i> Database Backup</a>
+<!--                                <a href="--><?php //echo site_url('/Admin/Settings/databaseBackup'); ?><!--"   class="btn btn-xs btn-success"><i class="fa fa-database"></i> Database Backup</a>-->
 
 
                             </div>
