@@ -10,7 +10,7 @@
 
         <div class="row">
             <div class="col-xs-12" style="margin-top: 15px;">
-                <?php echo $menu;?>
+                <?php //echo $menu;?>
             </div>
         </div>
     </section>
