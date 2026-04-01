@@ -44,7 +44,6 @@
                                 <th>No</th>
                                 <th>Name</th>
                                 <th>Account No</th>
-                                <th>Balance</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -56,7 +55,6 @@
                                     <td width="80px"><?php echo $start++ ?></td>
                                     <td><?php echo $bank->name ?></td>
                                     <td><?php echo $bank->account_no ?></td>
-                                    <td><?php echo showWithCurrencySymbol($bank->balance) ?></td>
                                     <td width="180px">
                                         <a href="javascript:void(0)" onclick="showData('<?php echo site_url('/Admin/Bank_ajax/update/'.$bank->bank_id); ?>','<?php echo '/Admin/Bank/update/'.$bank->bank_id; ?>')"  class="btn btn-xs btn-info">Update</a>
                                         <?php if($isDeletable == true){ ?>

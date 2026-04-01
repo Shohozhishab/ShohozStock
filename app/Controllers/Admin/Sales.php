@@ -354,10 +354,6 @@ class Sales extends BaseController
             $ledger_discountTab->insert($disLedgher);
             $discount_ledg_id = DB()->insertID();
 
-            //insert log (start)
-            $this->transactionLog->insert_log_data('ledger_discount',$discount_ledg_id,'',$alldiscount,'','',$invoiceId,'');
-            //insert log (end)
-
             //update discount balance(start)
             $disData = array(
                 'discount' => $disRestBel,
@@ -366,9 +362,6 @@ class Sales extends BaseController
             $shopsTab = DB()->table('shops');
             $shopsTab->where('sch_id', $shopId)->update($disData);
             //update discount balance(end)
-            //insert log (start)
-            $this->transactionLog->insert_log_data('shops',$shopId,'',$alldiscount,'','',$invoiceId,'','discount');
-            //insert log (end)
         }
         //discount ledger make (end)
 
@@ -393,10 +386,6 @@ class Sales extends BaseController
             $ledger_vatTab->insert($VatLedgher);
             $ledg_vat_id = DB()->insertID();
 
-            //insert log (start)
-            $this->transactionLog->insert_log_data('ledger_vat',$ledg_vat_id,'',$vatAmount,'','',$invoiceId,'');
-            //insert log (end)
-
             //update vat register table(start)
             $vatRegData = array(
                 'balance' => $vatRestBalance,
@@ -405,9 +394,6 @@ class Sales extends BaseController
             $ledger_vatTab = DB()->table('vat_register');
             $ledger_vatTab->where('sch_id', $shopId)->update($vatRegData);
             //update vat register table(end)
-            //insert log (start)
-            $this->transactionLog->insert_log_data('vat_register',$shopId,'',$vatAmount,'','',$invoiceId,'');
-            //insert log (end)
         }
         //vat ledgher insert (end)
 
@@ -462,9 +448,6 @@ class Sales extends BaseController
             $productsTable = DB()->table('products');
             $productsTable->where('prod_id', $proId[$i])->update($qntProData);
             //product Qnt Update in product table (end)
-            //insert log (start)
-            $this->transactionLog->insert_log_data('products',$proId[$i],'',$quantity[$i],'','',$invoiceId,'','quantity');
-            //insert log (end)
         }
 
 
@@ -489,9 +472,6 @@ class Sales extends BaseController
         $saleUpdata = array('sale_balance' => $restBalSale);
         $shopsTabl = DB()->table('shops');
         $shopsTabl->where('sch_id', $shopId)->update($saleUpdata);
-        //insert log (start)
-        $this->transactionLog->insert_log_data('shops',$shopId,'',$withoutVat,'','',$invoiceId,'','sale_balance');
-        //insert log (end)
 
         $saleLedgData = array(
             'sch_id' => $shopId,
@@ -507,9 +487,6 @@ class Sales extends BaseController
         $ledger_salesTab->insert($saleLedgData);
         $ledgSale_id = DB()->insertID();
         //sale balance update and ledger create (end)
-        //insert log (start)
-        $this->transactionLog->insert_log_data('ledger_sales',$ledgSale_id,'',$withoutVat,'','',$invoiceId,'','sale_balance');
-        //insert log (end)
 
 
         //Update salse profit in invoice table (start)
@@ -526,9 +503,6 @@ class Sales extends BaseController
         );
         $invoiceTabl = DB()->table('invoice');
         $invoiceTabl->where('invoice_id', $invoiceId)->update($inData);
-        //insert log (start)
-        $this->transactionLog->insert_log_data('invoice_id',$invoiceId,'',$invProfit,'','',$invoiceId,'','profit');
-        //insert log (end)
 
 
         $shopProfit = get_data_by_id('profit', 'shops', 'sch_id', $shopId);
@@ -539,9 +513,6 @@ class Sales extends BaseController
         );
         $shopsTable = DB()->table('shops');
         $shopsTable->where('sch_id', $shopId)->update($dataShoproUp);
-        //insert log (start)
-        $this->transactionLog->insert_log_data('shops',$shopId,'',$totalProfit,'','',$invoiceId,'','profit');
-        //insert log (end)
 
         $profitLedData = array(
             'sch_id' => $shopId,
@@ -556,9 +527,6 @@ class Sales extends BaseController
         $ledger_profitTab = DB()->table('ledger_profit');
         $ledger_profitTab->insert($profitLedData);
         $profit_id = DB()->insertID();
-        //insert log (start)
-        $this->transactionLog->insert_log_data('ledger_profit',$profit_id,'',$totalProfit,'','',$invoiceId,'');
-        //insert log (end)
 
 
         $stockBal = get_data_by_id('stockAmount', 'shops', 'sch_id', $shopId);
@@ -568,10 +536,6 @@ class Sales extends BaseController
         $stockUpdata = array('stockAmount' => $restBalStock);
         $shopsTabl = DB()->table('shops');
         $shopsTabl->where('sch_id', $shopId)->update($stockUpdata);
-
-        //insert log (start)
-        $this->transactionLog->insert_log_data('shops',$shopId,'',$totalpurPrice,'','',$invoiceId,'','stockAmount');
-        //insert log (end)
 
         $stockLedgData = array(
             'sch_id' => $shopId,
@@ -587,9 +551,6 @@ class Sales extends BaseController
         $ledger_stockTabl->insert($stockLedgData);
         $stock_id = DB()->insertID();
         //Update salse profit in invoice table (end)
-        //insert log (start)
-        $this->transactionLog->insert_log_data('ledger_stock',$stock_id,'',$totalpurPrice,'','',$invoiceId,'');
-        //insert log (end)
 
 
         //existing customer balance update and customer ledger create (start)
@@ -607,9 +568,6 @@ class Sales extends BaseController
             $customersTab = DB()->table('customers');
             $customersTab->where('customer_id', $customerId)->update($custData);
             //customer balance update in customer table (end)
-            //insert log (start)
-            $this->transactionLog->insert_log_data('customers',$customerId,'',$finalAmount,'','',$invoiceId,'');
-            //insert log (end)
 
 
             //insert customer ledger in ledger(start)
@@ -629,9 +587,6 @@ class Sales extends BaseController
             $ledg_id = DB()->insertID();
             //insert customer ledger in ledger(end)
 
-            //insert log (start)
-            $this->transactionLog->insert_log_data('ledger',$ledg_id,'',$finalAmount,'','',$invoiceId,'');
-            //insert log (end)
             if(!empty($sms)) {
                 $message = 'Thank you for your order.Your order amount is-' . $finalAmount;
                 $phone = get_data_by_id('mobile', 'customers', 'customer_id', $customerId);
@@ -655,9 +610,6 @@ class Sales extends BaseController
             $shopsTab = DB()->table('shops');
             $shopsTab->where('sch_id', $shopId)->update($shopsData);
             //cash pay amount update shops cash (end)
-            //insert log (start)
-            $this->transactionLog->insert_log_data('shops',$shopId,'',$nagod,'','',$invoiceId,'','cash');
-            //insert log (end)
 
 
             //insert ledger in ledger_nagodan cash pay amount(start)
@@ -675,9 +627,7 @@ class Sales extends BaseController
             $ledger_nagodanTab->insert($lgNagData);
             $ledg_nagodan_id = DB()->insertID();
             //insert ledger in ledger_nagodan cash pay amount(start)
-            //insert log (start)
-            $this->transactionLog->insert_log_data('ledger_nagodan',$ledg_nagodan_id,'',$nagod,'','',$invoiceId,'');
-            //insert log (end)
+
 
 
             //cash pay amount and customer balance amount calculate and update customer balance (start)
@@ -696,9 +646,6 @@ class Sales extends BaseController
                 $customersTab = DB()->table('customers');
                 $customersTab->where('customer_id', $customerId)->update($custnewData);
                 //update calculate balance in customer table(end)
-                //insert log (start)
-                $this->transactionLog->insert_log_data('customers',$customerId,'',$nagod,'','',$invoiceId,'');
-                //insert log (end)
 
 
                 //create ledger in ledger table
@@ -716,9 +663,7 @@ class Sales extends BaseController
                 $ledgerTab = DB()->table('ledger');
                 $ledgerTab->insert($ledgernogodData);
                 $ledg_id = DB()->insertID();
-                //insert log (start)
-                $this->transactionLog->insert_log_data('ledger',$ledg_id,'',$nagod,'','',$invoiceId,'');
-                //insert log (end)
+
             }
             //cash pay amount and customer balance amount calculate and update customer balance (end)
         }
@@ -738,9 +683,6 @@ class Sales extends BaseController
             $bankTab = DB()->table('bank');
             $bankTab->where('bank_id', $bankId)->update($bankData);
             //bank pay amount calculate and update bank balance (end)
-            //insert log (start)
-            $this->transactionLog->insert_log_data('bank',$bankId,'',$bankAmount,'','',$invoiceId,'');
-            //insert log (end)
 
 
             //insert ledger in table ledger_bank (start)
@@ -759,9 +701,7 @@ class Sales extends BaseController
             $ledger_bankTab->insert($lgBankData);
             $ledgBank_id = DB()->insertID();
             //insert ledger in table ledger_bank (end)
-            //insert log (start)
-            $this->transactionLog->insert_log_data('ledger_bank',$ledgBank_id,'',$bankAmount,'','',$invoiceId,'');
-            //insert log (end)
+
 
             if ($customerId) {
                 //bank pay amount calculate and customer balance update (start)
@@ -775,9 +715,7 @@ class Sales extends BaseController
                 $customersTab = DB()->table('customers');
                 $customersTab->where('customer_id', $customerId)->update($custnewData);
                 //bank pay amount calculate and customer balance update (start)
-                //insert log (start)
-                $this->transactionLog->insert_log_data('customers',$customerId,'',$bankAmount,'','',$invoiceId,'');
-                //insert log (end)
+
 
                 //insert ledger in table ledger (start)
                 $ledgerbankData = array(
@@ -794,9 +732,7 @@ class Sales extends BaseController
                 $ledgerTab = DB()->table('ledger');
                 $ledgerTab->insert($ledgerbankData);
                 $ledg_id = DB()->insertID();
-                //insert log (start)
-                $this->transactionLog->insert_log_data('ledger',$ledg_id,'',$bankAmount,'','',$invoiceId,'');
-                //insert log (end)
+
 
             }
 
@@ -825,9 +761,7 @@ class Sales extends BaseController
             $chaqueTab->insert($chequeData);
             $chaqueId = DB()->insertID();
             //cheque pay amount calculate and insert cheque tabile(end)
-            //insert log (start)
-            $this->transactionLog->insert_log_data('chaque',$chaqueId,'',$chequeAmount,'','',$invoiceId,'');
-            //insert log (end)
+
 
             //chaque id update in invoice table(start)
             $invChaqueId = array(

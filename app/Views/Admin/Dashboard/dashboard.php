@@ -35,19 +35,34 @@
                 <!-- ./col -->
 
 
-            </div>
 
-            <div class="row">
-                <!-- ./col -->
+                <div class="col-md-4 ">
+                    <div class="info-box " style="margin-top: 20px;">
+                        <span class="info-box-icon bg-green"><i class="fa fa-list"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">Total Products</span>
+                            <span class="info-box-number"><?php echo $totalProduct; ?></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-4">
+                    <div class="info-box" style="margin-top: 20px;">
+                        <span class="info-box-icon bg-green"><i class="ion ion-person-add"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">Total Customers</span>
+                            <span class="info-box-number"><?php echo $totalCustomer; ?></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
             </div>
             <!-- /.row -->
-            <!-- Main row -->
-            <div class="row">
-
-                <!-- /.Left col -->
-
-            </div>
-            <!-- /.row (main row) -->
 
         </section>
         <!-- /.content -->
