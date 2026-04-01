@@ -42,8 +42,20 @@ class DashboardAjax extends BaseController
         } else {
 
             $shopId = $this->session->shopId;
+            // Total Product count (start)
+            $proTable = DB()->table('products');
+            $totalProduct = $proTable->where('sch_id', $shopId)->countAllResults();
+            // Total Product count (end)
 
+            // Total Customer count (start)
+            $cousTable = DB()->table('customers');
+            $totalCustomer = $cousTable->where('sch_id', $shopId)->countAllResults();
+            // Total Customer count (end)
 
+            $data = array(
+                'totalProduct' => $totalProduct,
+                'totalCustomer' => $totalCustomer,
+            );
 
             // All Permissions
             //$perm = array('create','read','update','delete','mod_access');

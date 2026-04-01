@@ -292,19 +292,6 @@ class Products extends BaseController
                 $oldCapital = get_data_by_id('capital', 'shops', 'sch_id', $shopId);
                 $newCapital = $oldCapital - $totalAmountPro;
 
-                // capital ledger data insert
-                $cpitalLedData = array(
-                    'sch_id' => $shopId,
-                    'particulars' => 'New Existing Products Add Amount',
-                    'trangaction_type' => 'Cr.',
-                    'amount' => $totalAmountPro,
-                    'rest_balance' => $newCapital,
-                    'createdBy' => $this->session->userId,
-                    'createdDtm' => date('Y-m-d h:i:s')
-                );
-                $ledger_capitalTable = DB()->table('ledger_capital');
-                $ledger_capitalTable->insert($cpitalLedData);
-                // capital ledger data insert
 
 
                 //stock last balance
