@@ -188,5 +188,20 @@ class Product_category extends BaseController
         }
     }
 
+    public function check_sub_cat(){
+        $shopId = $this->session->shopId;
+
+        $Id = $this->request->getPost('ID');
+        $product_categoryTable = DB()->table('product_category');
+        $query = $product_categoryTable->where('parent_pro_cat',$Id)->where('sch_id',$shopId)->where("deleted IS NULL")->get()->getResult();
+        $options = '';
+        foreach ($query as $row) {
+
+            $options .= '<option value="' . $row->prod_cat_id . '" ';
+            $options .= '>' . $row->product_category. '</option>';
+        }
+        print $options;
+    }
+
 
 }

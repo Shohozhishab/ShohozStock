@@ -918,26 +918,9 @@ class Sales extends BaseController
 
         //discount ledger make (start)
         if (!empty($alldiscount)) {
-            $discountLedInfo = $this->transactionLog->get_table_name_by_row_invoice_id('ledger_discount',$invoiceId);
-            $prevDisLed = get_data_by_id('amount', 'ledger_discount', 'discount_ledg_id', $discountLedInfo->id);
-            $restDisBal = ($prevDisLed - $discountLedInfo->amount) + $alldiscount;
-            $disLedgher = array(
-                'amount' => $alldiscount,
-                'rest_balance' => $restDisBal,
-            );
-            $ledger_discountTab = DB()->table('ledger_discount');
-            $ledger_discountTab->where('discount_ledg_id', $discountLedInfo->id)->update($disLedgher);
-            $this->ledger_discount_rest_balance_update($invoiceId,$alldiscount,$discountLedInfo->id,$discountLedInfo->amount);
-            //transaction edit log data insert
-            $this->transactionLog->transaction_edit_log_data_insert('ledger_discount','','',$this->session->userId,$discountLedInfo->amount,$alldiscount,$invoiceId,'');
-            //insert Transaction in transaction table (end)
-            //transaction edit log data insert
-            $this->transactionLog->transaction_edit_log_data_insert('ledger_discount',$discountLedInfo->id,'',$this->session->userId,$discountLedInfo->amount,$alldiscount,$invoiceId,'' );
-            //insert Transaction in transaction table (end)
-
 
             $prevDis = get_data_by_id('discount', 'shops', 'sch_id', $shopId);
-            $disRestBel = ($prevDis - $discountLedInfo->amount) + $alldiscount;
+            $disRestBel = $prevDis + $alldiscount;
             //update discount balance(start)
             $disData = array(
                 'discount' => $disRestBel,
@@ -946,91 +929,28 @@ class Sales extends BaseController
             $shopsTab = DB()->table('shops');
             $shopsTab->where('sch_id', $shopId)->update($disData);
             //update discount balance(end)
-            //transaction edit log data insert
-            $this->transactionLog->transaction_edit_log_data_insert('shops','','',$this->session->userId,$discountLedInfo->amount,$alldiscount,$invoiceId,'','discount');
-            //insert Transaction in transaction table (end)
-
-            //transaction edit log data insert
-            $this->transactionLog->transaction_edit_log_data_insert('shops',$shopId,'',$this->session->userId,$discountLedInfo->amount,$alldiscount,$invoiceId,'','discount' );
-            //insert Transaction in transaction table (end)
         }
         //discount ledger make (end)
 
         //vat ledger insert (start)
         if (!empty($vatAmount)) {
-            $vatLedInfo = $this->transactionLog->get_table_name_by_row_invoice_id('ledger_vat',$invoiceId);
-            if (!empty($vatLedInfo)){
-                $previousVat = get_data_by_id('balance', 'vat_register', 'sch_id', $shopId);
-                $vatRestBalance = ($previousVat + $vatLedInfo->amount) - $vatAmount;
-
-                //update vat register table(start)
-                $vatRegData = array(
-                    'balance' => $vatRestBalance,
-                    'updatedBy' => $userId,
-                );
-                $ledger_vatTab = DB()->table('vat_register');
-                $ledger_vatTab->where('sch_id', $shopId)->update($vatRegData);
-                //update vat register table(end)
-                //transaction edit log data insert
-                $this->transactionLog->transaction_edit_log_data_insert('vat_register',$shopId,'',$this->session->userId,$vatLedInfo->amount,$vatAmount,$invoiceId,'');
-                //insert Transaction in transaction table (end)
-
-                $vatLedRestBal = get_data_by_id('rest_balance', 'ledger_vat', 'ledg_vat_id', $vatLedInfo->id);
-                $newVatLedRestBal = ($vatLedRestBal + $vatLedInfo->amount) - $vatAmount;
-
-                $vatLedger = array(
-                    'amount' => $vatAmount,
-                    'rest_balance' => $newVatLedRestBal,
-                );
-                $ledger_vatTab = DB()->table('ledger_vat');
-                $ledger_vatTab->where('ledg_vat_id', $vatLedInfo->id)->update($vatLedger);
-                $this->vat_ledger_rest_balance_update($invoiceId,$vatAmount,$vatLedInfo->id,$vatLedInfo->amount);
-                //transaction edit log data insert
-                $this->transactionLog->transaction_edit_log_data_insert('ledger_vat',$vatLedInfo->id,'',$this->session->userId,$vatLedInfo->amount,$vatAmount,$invoiceId,'');
-                //insert Transaction in transaction table (end)
+            $previousVat = get_data_by_id('balance', 'vat_register', 'sch_id', $shopId);
+            $vatRestBalance = $previousVat - $vatAmount;
 
 
-            }else {
-                $vatId = get_data_by_id('vat_id', 'vat_register', 'sch_id', $shopId);
-                $previousVat = get_data_by_id('balance', 'vat_register', 'sch_id', $shopId);
-                $vatRestBalance = $previousVat - $vatAmount;
-
-                $VatLedgher = array(
-                    'sch_id' => $shopId,
-                    'vat_id' => $vatId,
-                    'invoice_id' => $invoiceId,
-                    'amount' => $vatAmount,
-                    'particulars' => 'Sale Vat Earn ',
-                    'trangaction_type' => 'Cr.',
-                    'rest_balance' => $vatRestBalance,
-                    'createdDtm' => date('Y-m-d h:i:s')
-                );
-                $ledger_vatTab = DB()->table('ledger_vat');
-                $ledger_vatTab->insert($VatLedgher);
-                $ledg_vat_id = DB()->insertID();
-                //insert log (start)
-                $this->transactionLog->insert_log_data('ledger_vat', $ledg_vat_id, '', $vatAmount, '', '', $invoiceId, '');
-                //insert log (end)
-
-                //update vat register table(start)
-                $vatRegData = array(
-                    'balance' => $vatRestBalance,
-                    'updatedBy' => $userId,
-                );
-                $ledger_vatTab = DB()->table('vat_register');
-                $ledger_vatTab->where('sch_id', $shopId)->update($vatRegData);
-                //update vat register table(end)
-                //insert log (start)
-                $this->transactionLog->insert_log_data('vat_register', $shopId, '', $vatAmount, '', '', $invoiceId, '');
-                //insert log (end)
-            }
+            //update vat register table(start)
+            $vatRegData = array(
+                'balance' => $vatRestBalance,
+                'updatedBy' => $userId,
+            );
+            $ledger_vatTab = DB()->table('vat_register');
+            $ledger_vatTab->where('sch_id', $shopId)->update($vatRegData);
+            //update vat register table(end)
         }
         //vat ledger insert (end)
 
         //invoice itame insert
-        $table = DB()->table('transaction_log');
-        $proQty = $table->where('invoice_id',$invoiceId)->where('table_name','products')->where('colum_name','quantity')->get()->getResult();
-        $totalpurPrice = 0;
+       $totalpurPrice = 0;
         $number = count($proId);
         for ($i = 0; $i < $number; $i++) {
 
@@ -1061,50 +981,8 @@ class Sales extends BaseController
             $invoice_itemTab2->where($where)->update($profitData);
             //calculating profit for individual item and updating the profit column (end)
 
-
-            //product Qnt Update in product table (start)
-            foreach ($proQty as $pro) {
-                if ($pro->id == $proId[$i]) {
-                    $productQnt = get_data_by_id('quantity', 'products', 'prod_id', $proId[$i]);
-                    $qnt = ($productQnt + $pro->amount) - $quantity[$i];
-                    $qntProData = array(
-                        'quantity' => $qnt,
-                    );
-                    $productsTable = DB()->table('products');
-                    $productsTable->where('prod_id', $proId[$i])->update($qntProData);
-                }
-            }
-            //product Qnt Update in product table (end)
         }
 
-        //sale balance update and ledger create (start)
-        $saleBalInfo = $this->transactionLog->get_table_name_by_row_invoice_id_by_colum_name('shops',$invoiceId,'sale_balance');
-        $withoutVat = $finalAmount - (int)$vatAmount;
-        $saleBal = get_data_by_id('sale_balance', 'shops', 'sch_id', $shopId);
-        $restBalSale = ($saleBal + $saleBalInfo->amount) - $withoutVat;
-
-        $saleUpdata = array('sale_balance' => $restBalSale);
-        $shopsTabl = DB()->table('shops');
-        $shopsTabl->where('sch_id', $shopId)->update($saleUpdata);
-        //transaction edit log data insert
-        $this->transactionLog->transaction_edit_log_data_insert('shops',$shopId,'',$this->session->userId,$saleBalInfo->amount,$withoutVat,$invoiceId,'','sale_balance');
-        //insert Transaction in transaction table (end)
-
-
-        $saleLedInfo = $this->transactionLog->get_table_name_by_row_invoice_id('ledger_sales',$invoiceId);
-        $saleBal = get_data_by_id('rest_balance', 'ledger_sales', 'ledgSale_id', $saleLedInfo->id);
-        $restBalSaleLad = ($saleBal + $saleLedInfo->amount) - $withoutVat;
-        $saleLedgData = array(
-            'amount' => $withoutVat,
-            'rest_balance' => $restBalSaleLad,
-        );
-        $ledger_salesTab = DB()->table('ledger_sales');
-        $ledger_salesTab->where('ledgSale_id', $saleLedInfo->id)->update($saleLedgData);
-        $this->ledger_sale_rest_balance_update($invoiceId,$withoutVat,$saleLedInfo->id,$saleLedInfo->amount);
-        //sale balance update and ledger create (end)
-        //transaction edit log data insert
-        $this->transactionLog->transaction_edit_log_data_insert('ledger_sales',$saleLedInfo->id,'',$this->session->userId,$saleLedInfo->amount,$withoutVat,$invoiceId,'');
-        //insert Transaction in transaction table (end)
 
         //Update salse profit in invoice table (start)
         $invoice_itemT = DB()->table('invoice_item');
@@ -1120,73 +998,13 @@ class Sales extends BaseController
         );
         $invoiceTabl = DB()->table('invoice');
         $invoiceTabl->where('invoice_id', $invoiceId)->update($inData);
-        //transaction edit log data insert
-        $this->transactionLog->transaction_edit_log_data_insert('invoice',$invoiceId,'',$this->session->userId,$invData->amount,$invProfit,$invoiceId,'');
-        //insert Transaction in transaction table (end)
-
-
-        $saleBalInfo = $this->transactionLog->get_table_name_by_row_invoice_id_by_colum_name('shops',$invoiceId,'profit');
-        $shopProfit = get_data_by_id('profit', 'shops', 'sch_id', $shopId);
-        $totShopPro = $shopProfit + $saleBalInfo->amount - $totalProfit;
-
-        $dataShoproUp = array(
-            'profit' => $totShopPro,
-        );
-        $shopsTable = DB()->table('shops');
-        $shopsTable->where('sch_id', $shopId)->update($dataShoproUp);
-        //transaction edit log data insert
-        $this->transactionLog->transaction_edit_log_data_insert('shops',$shopId,'',$this->session->userId,$saleBalInfo->amount,$totalProfit,$invoiceId,'');
-        //insert Transaction in transaction table (end)
-
-
-        $saleLedInfo = $this->transactionLog->get_table_name_by_row_invoice_id('ledger_profit',$invoiceId);
-        $ledgerProfit = get_data_by_id('rest_balance', 'ledger_profit', 'profit_id', $saleLedInfo->id);
-        $ledgerRestProfit = ($ledgerProfit + $saleLedInfo->amount) - $totalProfit;
-        $profitLedData = array(
-            'amount' => $totalProfit,
-            'rest_balance' => $ledgerRestProfit,
-        );
-        $ledger_profitTab = DB()->table('ledger_profit');
-        $ledger_profitTab->where('profit_id', $saleLedInfo->id)->update($profitLedData);
-        $this->ledger_profit_rest_balance_update($invoiceId,$totalProfit,$saleLedInfo->id,$saleLedInfo->amount);
-
-        //transaction edit log data insert
-        $this->transactionLog->transaction_edit_log_data_insert('ledger_profit',$saleLedInfo->id,'',$this->session->userId,$saleLedInfo->amount,$totalProfit,$invoiceId,'');
-        //insert Transaction in transaction table (end)
-
-        $stockBalInfo = $this->transactionLog->get_table_name_by_row_invoice_id_by_colum_name('shops',$invoiceId,'stockAmount');
-        $stockBal = get_data_by_id('stockAmount', 'shops', 'sch_id', $shopId);
-        $restBalStock = ($stockBal + $stockBalInfo->amount) - $totalpurPrice;
-        $stockUpdata = array('stockAmount' => $restBalStock);
-        $shopsTabl = DB()->table('shops');
-        $shopsTabl->where('sch_id', $shopId)->update($stockUpdata);
-        //transaction edit log data insert
-        $this->transactionLog->transaction_edit_log_data_insert('shops',$shopId,'',$this->session->userId,$stockBalInfo->amount,$totalpurPrice,$invoiceId,'');
-        //insert Transaction in transaction table (end)
-
-
-        $stockLedInfo = $this->transactionLog->get_table_name_by_row_invoice_id('ledger_stock',$invoiceId);
-        $stockLedBal = get_data_by_id('rest_balance', 'ledger_stock', 'stock_id', $stockLedInfo->id);
-        $restBalStockTotal = ($stockLedBal + $stockLedInfo->amount) - $totalpurPrice;
-        $stockLedgData = array(
-            'amount' => $totalpurPrice,
-            'rest_balance' => $restBalStockTotal,
-        );
-        $ledger_stockTabl = DB()->table('ledger_stock');
-        $ledger_stockTabl->where('stock_id', $stockLedInfo->id)->update($stockLedgData);
-        $this->ledger_stock_rest_balance_update($invoiceId,$totalpurPrice,$stockLedInfo->id,$stockLedInfo->amount);
-        //Update salse profit in invoice table (end)
-        //transaction edit log data insert
-        $this->transactionLog->transaction_edit_log_data_insert('ledger_stock',$stockLedInfo->id,'',$this->session->userId,$stockLedInfo->amount,$totalpurPrice,$invoiceId,'');
-        //insert Transaction in transaction table (end)
 
 
         //existing customer balance update and customer ledger create (start)
         if ($customerId) {
             //customer balance update in customer table (start)
-            $customerInfo = $this->transactionLog->get_table_name_by_row_invoice_id('customers',$invoiceId);
             $customerCash = get_data_by_id('balance', 'customers', 'customer_id', $customerId);
-            $newCash = ($customerCash - $customerInfo->amount) + $finalAmount;
+            $newCash = $customerCash + $finalAmount;
             //update balance
             $custData = array(
                 'balance' => $newCash,
@@ -1194,36 +1012,16 @@ class Sales extends BaseController
             $customersTab = DB()->table('customers');
             $customersTab->where('customer_id', $customerId)->update($custData);
             //customer balance update in customer table (end)
-            //transaction edit log data insert
-            $this->transactionLog->transaction_edit_log_data_insert('customers',$customerId,'',$this->session->userId,$customerInfo->amount,$finalAmount,$invoiceId,'');
-            //insert Transaction in transaction table (end)
 
 
-            //insert customer ledger in ledger(start)
-            $customerLedInfo = $this->transactionLog->get_table_name_by_row_invoice_id('ledger',$invoiceId);
-            $customerOldCash = get_data_by_id('rest_balance', 'ledger', 'ledg_id', $customerLedInfo->id);
-            $customerLedRestCash = ($customerOldCash - $customerLedInfo->amount) + $finalAmount;
-            $ledgerData = array(
-                'amount' => $finalAmount,
-                'rest_balance' => $customerLedRestCash,
-            );
-            $ledgerTab = DB()->table('ledger');
-            $ledgerTab->where('ledg_id', $customerLedInfo->id)->update($ledgerData);
-            $this->ledger_customer_rest_balance_update($invoiceId,$finalAmount,$customerLedInfo->id,$customerLedInfo->amount);
-            //insert customer ledger in ledger(end)
-            //transaction edit log data insert
-            $this->transactionLog->transaction_edit_log_data_insert('ledger',$customerLedInfo->id,'',$this->session->userId,$customerLedInfo->amount,$finalAmount,$invoiceId,'');
-            //insert Transaction in transaction table (end)
+
 
         }
         //existing customer balance update and customer ledger create (end)
 
         //cash pay shop cash update and create nagod ledger (start)
         if ($nagod > 0) {
-            //cash pay amount update shops cash (start)
-            $shopBalInfo = $this->transactionLog->get_table_name_by_row_invoice_id_by_colum_name('shops',$invoiceId,'cash');
-            $shopsCash = get_data_by_id('cash', 'shops', 'sch_id', $shopId);
-            $upCahs = ($shopsCash - $shopBalInfo->amount) + $nagod;
+            $upCahs = $nagod;
 
             $shopsData = array(
                 'cash' => $upCahs,
@@ -1231,41 +1029,14 @@ class Sales extends BaseController
             $shopsTab = DB()->table('shops');
             $shopsTab->where('sch_id', $shopId)->update($shopsData);
             //cash pay amount update shops cash (end)
-            //transaction edit log data insert
-            $this->transactionLog->transaction_edit_log_data_insert('shops',$shopId,'',$this->session->userId,$shopBalInfo->amount,$nagod,$invoiceId,'','cash');
-            //insert Transaction in transaction table (end)
-
-
-
-            //insert ledger in ledger_nagodan cash pay amount(start)
-            $shopLedInfo = $this->transactionLog->get_table_name_by_row_invoice_id('ledger_nagodan',$invoiceId);
-            $shopLedBal = get_data_by_id('rest_balance', 'ledger_nagodan', 'ledg_nagodan_id', $shopLedInfo->id);
-            $ledgerUpCahs = ($shopLedBal - $shopLedInfo->amount) + $nagod;
-            $lgNagData = array(
-                'amount' => $nagod,
-                'rest_balance' => $ledgerUpCahs,
-            );
-            $ledger_nagodanTab = DB()->table('ledger_nagodan');
-            $ledger_nagodanTab->where('ledg_nagodan_id', $shopLedInfo->id)->update($lgNagData);
-            $this->cash_ledger_rest_balance_update($invoiceId,$amount,$shopLedInfo->id,$shopLedInfo->amount);
-            //insert ledger in ledger_nagodan cash pay amount(start)
-            //transaction edit log data insert
-            $this->transactionLog->transaction_edit_log_data_insert('ledger_nagodan',$shopLedInfo->id,'',$this->session->userId,$shopLedInfo->amount,$nagod,$invoiceId,'');
-            //insert Transaction in transaction table (end)
 
 
             //cash pay amount and customer balance amount calculate and update customer balance (start)
             if ($customerId) {
                 //customer balance calculate (start)
-                $queryLed = DB()->table('transaction_log')
-                    ->where('table_name', 'customers')
-                    ->where('invoice_id', $invoiceId)
-                    ->orderBy('transaction_log_id', 'ASC')
-                    ->limit(1, 1)->get();
-                $customerMidInfo = $queryLed->getRow();
 
                 $custCash = get_data_by_id('balance', 'customers', 'customer_id', $customerId);
-                $newcastCash = ($custCash + $customerMidInfo->amount) - $nagod;
+                $newcastCash = $custCash - $nagod;
                 //customer balance calculate (end)
                 //update calculate balance in customer table(start)
                 $custnewData = array(
@@ -1275,30 +1046,7 @@ class Sales extends BaseController
                 $customersTab = DB()->table('customers');
                 $customersTab->where('customer_id', $customerId)->update($custnewData);
                 //update calculate balance in customer table(end)
-                //transaction edit log data insert
-                $this->transactionLog->transaction_edit_log_data_insert('customers',$customerId,'',$this->session->userId,$customerMidInfo->amount,$nagod,$invoiceId,'');
-                //insert Transaction in transaction table (end)
 
-
-                //create ledger in ledger table
-                $queryLed = DB()->table('transaction_log')
-                    ->where('table_name', 'ledger')
-                    ->where('invoice_id', $invoiceId)
-                    ->orderBy('transaction_log_id', 'ASC')
-                    ->limit(1, 1)->get();
-                $customerLedgerMidInfo = $queryLed->getRow();
-                $custCash = get_data_by_id('rest_balance', 'ledger', 'ledg_id', $customerLedgerMidInfo->id);
-                $newCastRestBal = ($custCash + $customerLedgerMidInfo->amount) - $nagod;
-                $ledgernogodData = array(
-                    'amount' => $nagod,
-                    'rest_balance' => $newCastRestBal,
-                );
-                $ledgerTab = DB()->table('ledger');
-                $ledgerTab->where('ledg_id', $customerLedgerMidInfo->id)->update($ledgernogodData);
-                $this->ledger_customer_rest_balance_update($invoiceId,$nagod,$customerLedgerMidInfo->id,$customerLedgerMidInfo->amount);
-                //transaction edit log data insert
-                $this->transactionLog->transaction_edit_log_data_insert('ledger',$customerLedgerMidInfo->id,'',$this->session->userId,$customerLedgerMidInfo->amount,$nagod,$invoiceId,'');
-                //insert Transaction in transaction table (end)
             }
             //cash pay amount and customer balance amount calculate and update customer balance (end)
         }
@@ -1307,9 +1055,9 @@ class Sales extends BaseController
         // bank pay amount calculate and bank balance update (start)
         if ($bankAmount > 0) {
             //bank pay amount calculate and update bank balance (start)
-            $bankInfo = $this->transactionLog->get_table_name_by_row_invoice_id('bank',$invoiceId);
+
             $bankCash = get_data_by_id('balance', 'bank', 'bank_id', $bankId);
-            $upCahs = ($bankCash - $bankInfo->amount) + $bankAmount;
+            $upCahs = $bankCash + $bankAmount;
 
             $bankData = array(
                 'balance' => $upCahs,
@@ -1317,34 +1065,12 @@ class Sales extends BaseController
             $bankTab = DB()->table('bank');
             $bankTab->where('bank_id', $bankId)->update($bankData);
             //bank pay amount calculate and update bank balance (end)
-            //transaction edit log data insert
-            $this->transactionLog->transaction_edit_log_data_insert('bank',$bankId,'',$this->session->userId,$bankInfo->amount,$bankAmount,$invoiceId,'');
-            //insert Transaction in transaction table (end)
 
-
-            //insert ledger in table ledger_bank (start)
-            $bankLedgerInfo = $this->transactionLog->get_table_name_by_row_invoice_id('ledger_bank',$invoiceId);
-            $bankLedgerCash = get_data_by_id('rest_balance', 'ledger_bank', 'ledgBank_id', $bankLedgerInfo->id);
-            $upRestBal = ($bankLedgerCash - $bankLedgerInfo->amount) + $bankAmount;
-            $lgBankData = array(
-                'amount' => $bankAmount,
-                'rest_balance' => $upRestBal,
-            );
-            $ledger_bankTab = DB()->table('ledger_bank');
-            $ledger_bankTab->where('ledgBank_id', $bankLedgerInfo->id)->update($lgBankData);
-            //insert ledger in table ledger_bank (end)
-            //transaction edit log data insert
-            $this->transactionLog->transaction_edit_log_data_insert('ledger_bank',$bankLedgerInfo->id,'',$this->session->userId,$bankLedgerInfo->amount,$bankAmount,$invoiceId,'');
-            //insert Transaction in transaction table (end)
 
             if ($customerId) {
                 //bank pay amount calculate and customer balance update (start)
-                $queryLed = DB()->table('transaction_log')
-                    ->where('table_name', 'customers')
-                    ->where('invoice_id', $invoiceId)->get();
-                $customerMidInfo = $queryLed->getLastRow();
                 $cusCash = get_data_by_id('balance', 'customers', 'customer_id', $customerId);
-                $bankastCash = ($cusCash + $customerMidInfo->amount) - $bankAmount;
+                $bankastCash = $cusCash  - $bankAmount;
 
                 $custnewData = array(
                     'balance' => $bankastCash,
@@ -1353,50 +1079,12 @@ class Sales extends BaseController
                 $customersTab = DB()->table('customers');
                 $customersTab->where('customer_id', $customerId)->update($custnewData);
                 //bank pay amount calculate and customer balance update (start)
-                //transaction edit log data insert
-                $this->transactionLog->transaction_edit_log_data_insert('customers',$customerId,'',$this->session->userId,$customerMidInfo->amount,$bankAmount,$invoiceId,'');
-                //insert Transaction in transaction table (end)
-
-
-                //insert ledger in table ledger (start)
-                $queryLed = DB()->table('transaction_log')
-                    ->where('table_name', 'ledger')
-                    ->where('invoice_id', $invoiceId)->get();
-                $customerLedMidInfo = $queryLed->getLastRow();
-                $cusOldBal = get_data_by_id('rest_balance', 'ledger', 'ledg_id', $customerLedMidInfo->id);
-                $bankRestBal = ($cusOldBal + $customerLedMidInfo->amount) - $bankAmount;
-                $ledgerbankData = array(
-                    'amount' => $bankAmount,
-                    'rest_balance' => $bankRestBal,
-                );
-                $ledgerTab = DB()->table('ledger');
-                $ledgerTab->where('ledg_id', $customerLedMidInfo->id)->update($ledgerbankData);
-                $this->ledger_customer_rest_balance_update($invoiceId,$bankAmount,$customerLedMidInfo->id,$customerLedMidInfo->amount);
-                //transaction edit log data insert
-                $this->transactionLog->transaction_edit_log_data_insert('ledger',$customerLedMidInfo->id,'',$this->session->userId,$customerLedMidInfo->amount,$bankAmount,$invoiceId,'');
-                //insert Transaction in transaction table (end)
             }
 
         }
         // bank pay amount calculate and bank balance update (end)
 
 
-        // cheque pay amount calculate and insert cheque table (end)
-        if ($chequeAmount > 0) {
-            //cheque pay amount calculate and insert cheque tabile(start)
-            $chaqueInfo = $this->transactionLog->get_table_name_by_row_invoice_id('chaque',$invoiceId);
-            $chequeData = array(
-                'chaque_number' => $chequeNo,
-                'amount' => $chequeAmount,
-            );
-            if (!empty($customerId)) {
-                $chequeData ['from'] = $customerId;
-            } else {
-                $chequeData ['from_name'] = $customerName;
-            }
-            $chaqueTab = DB()->table('chaque');
-            $chaqueTab->where('chaque_id',$chaqueInfo->id)->update($chequeData);
-        }
 
         DB()->transComplete();
         $this->session->setFlashdata('message', '<div class="alert alert-success alert-dismissible" role="alert">Update Record Success<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');

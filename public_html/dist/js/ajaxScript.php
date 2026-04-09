@@ -137,7 +137,7 @@ function goBack() {
         //alert(id);
         $.ajax({
           type: "POST",
-          url: "<?php echo site_url('Admin/Purchase/check_sub_cat') ?>",
+          url: "<?php echo site_url('Admin/Product_category/check_sub_cat') ?>",
           dataType: "text",
           data: {ID: id},
 
