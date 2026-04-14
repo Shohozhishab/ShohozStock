@@ -64,9 +64,9 @@
                                         <td><?php echo showWithCurrencySymbol($products->purchase_price) ?></td>
                                         <td><?php echo $products->purchase_date ?></td>
                                         <td>
-                                            <a href="javascript:void(0)"
-                                               onclick="showData('<?php echo site_url('/Admin/Products_ajax/update/' . $products->prod_id); ?>','<?php echo '/Admin/Products/update/' . $products->prod_id; ?>')"
+                                            <a href="javascript:void(0)" onclick="showData('<?php echo site_url('/Admin/Products_ajax/update/' . $products->prod_id); ?>','<?php echo '/Admin/Products/update/' . $products->prod_id; ?>')"
                                                class="btn btn-warning btn-xs">Update</a>
+                                            <a href="<?php echo site_url('/Admin/Products/delete/' . $products->prod_id); ?>" onclick="return confirm('Are you sure you want to delete this item?');"  class="btn btn-danger btn-xs">Delete</a>
                                         </td>
                                     </tr>
                                 <?php } ?>

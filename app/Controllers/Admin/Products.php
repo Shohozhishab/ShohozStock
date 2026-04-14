@@ -325,5 +325,12 @@ class Products extends BaseController
         }
     }
 
+    public function delete($prod_id){
+        $productTable = DB()->table('products');
+        $productTable->where('prod_id', $prod_id)->delete();
+
+        $this->session->setFlashdata('message', '<div class="alert alert-success alert-dismissible" role="alert"> Delete data successfully  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+        return redirect()->to(site_url('Admin/Products'));
+    }
 
 }
