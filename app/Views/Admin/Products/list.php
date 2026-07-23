@@ -24,7 +24,7 @@
                                     <h3 class="box-title">Products List</h3>
                                 </div>
                                 <div class="col-lg-8">
-                                    <a href="javascript:void(0)" onclick="showData('<?php echo site_url('/Admin/Products_ajax/add_existing_product/'); ?>','<?php echo '/Admin/Products/add_existing_product/'; ?>')" class="btn btn-info pull-right btn-xs" style="margin-left:10px;"><i class="fa fa-fw fa-tasks"></i> Add Product</a>
+                                    <a href="javascript:void(0)" onclick="showData('<?php echo site_url('/Admin/Products_ajax/add_existing_product/'); ?>','<?php echo '/Admin/Products/add_existing_product/'; ?>')" class="btn btn-info pull-right btn-xs" style="margin-left:10px;"><i class="fa fa-fw fa-tasks"></i> Add Existing Product</a>
                                     <a href="javascript:void(0)" onclick="showData('<?php echo site_url('/Admin/Products_short_list_ajax/'); ?>','<?php echo '/Admin/Products_short_list/'; ?>')" class="btn btn-danger pull-right btn-xs" style="margin-left:10px;"><i class="fa fa-fw fa-tasks"></i> Short List</a>
 
                                     <button type="submit" class="btn btn-primary pull-right btn-xs"><i class="fa fa-barcode"></i> Barcode Generate</button>
@@ -60,19 +60,67 @@
                                         </td>
                                         <td><?php echo $products->name ?></td>
                                         <td><?php echo $products->quantity ?>
-                                            /<?php echo showUnitName($products->unit) ?></td>
+                                            / <?php echo showUnitName($products->unit) ?></td>
                                         <td><?php echo showWithCurrencySymbol($products->purchase_price) ?></td>
                                         <td><?php echo $products->purchase_date ?></td>
                                         <td>
-                                            <a href="javascript:void(0)" onclick="showData('<?php echo site_url('/Admin/Products_ajax/update/' . $products->prod_id); ?>','<?php echo '/Admin/Products/update/' . $products->prod_id; ?>')"
+                                            <a href="javascript:void(0)"
+                                               onclick="showData('<?php echo site_url('/Admin/Products_ajax/update/' . $products->prod_id); ?>','<?php echo '/Admin/Products/update/' . $products->prod_id; ?>')"
                                                class="btn btn-warning btn-xs">Update</a>
-                                            <a href="<?php echo site_url('/Admin/Products/delete/' . $products->prod_id); ?>" onclick="return confirm('Are you sure you want to delete this item?');"  class="btn btn-danger btn-xs">Delete</a>
                                         </td>
                                     </tr>
                                 <?php } ?>
 
                                 </tbody>
                             </table>
+
+                            <div class="row no-print" >
+                                <div class="col-xs-12">
+                                    <button onclick="printDiv('ledgPrint')" class="print_line btn btn-primary pull-right" ><i class="fa fa-print "></i> Print Now</button>
+                                    <button type="button" class="btn btn-info pull-right" style="margin-right: 10px;" onclick="downloadPDF('ledgPrint','sales')"><i class="fa fa-file-pdf-o "></i> Download PDF </button>
+                                    <button type="button" class="btn btn-success pull-right" style="margin-right: 10px;" onclick="downloadCSV('ledgPrint','sales')"><i class="fa fa-file-excel-o "></i> Download CSV</button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12" id="ledgPrint" style="display: none; text-transform: capitalize; " >
+                                <div class="col-xs-12" style="margin-bottom: 20px;   ">
+                                    <div class="col-xs-6">
+                                        <?php if(logo_image() == NULL){ ?>
+                                            <img src="<?php echo base_url() ?>/uploads/schools/no_image.jpg" alt="User Image" >
+                                        <?php }else{ ?>
+                                            <img src="<?php echo base_url(); ?>/uploads/schools/<?php echo logo_image(); ?>" class="" alt="User Image">
+                                        <?php } ?>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <?php print address(); ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-12" >
+                                    <table class="table table-bordered table-striped text-capitalize">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Quantity</th>
+                                            <th>Purchase Price</th>
+                                            <th>Purchase Date</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php $i = 1;
+                                        foreach ($products_data as $products) { ?>
+                                            <tr>
+                                                <td><?php echo $products->name ?></td>
+                                                <td><?php echo $products->quantity ?>
+                                                    / <?php echo showUnitName($products->unit) ?></td>
+                                                <td><?php echo showWithCurrencySymbol($products->purchase_price) ?></td>
+                                                <td><?php echo $products->purchase_date ?></td>
+                                            </tr>
+                                        <?php } ?>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                         <!-- /.box-body -->
                     </div>
